@@ -488,6 +488,7 @@ module.exports = router => {
             })
         }
             const rapidID = getrapidID(req);
+            const email = getemail(req);
 
             if (!rapidID) {
                 console.log("invalid json input")
@@ -496,7 +497,7 @@ module.exports = router => {
                 })
                 }
 
-                auditUser.auditUser(rapidID)
+                auditUser.auditUser(rapidID,email)
 
                 .then(result => {
 
@@ -505,6 +506,7 @@ module.exports = router => {
                         org: result.orgname,
                         dates: result.timestamp,
                         doctypes: result.documentid,
+                        requestDate:result.requestDate,
                         message: "fetched successfully"
                     })
                 })

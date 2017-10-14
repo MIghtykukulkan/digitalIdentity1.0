@@ -3,12 +3,13 @@ var userss = "risabh.s";
 const doc = require('../models/doc');
 const user = require('../models/user');
 const bcSdk = require('../query');
+const request = require('../models/request');
 var ownsLedgerData = [];
 var docArray = [];
 
 
 
-exports.auditUser = (rapidID) => {
+exports.auditUser = (rapidID,email) => {
     return new Promise((resolve, reject) => {
 
         bcSdk.getMydocs({
@@ -34,6 +35,8 @@ exports.auditUser = (rapidID) => {
                 var timestamps = [];
                 var rapiddocIDs = [];
                 var doctype = [];
+                var requestDate =[];
+
                 for (let u = 0; u < orgkeys.length; u++) {
 
                     var orgname = users[u]._doc.orgname
@@ -65,16 +68,30 @@ exports.auditUser = (rapidID) => {
                         }
                     }
                     console.log(doctype)
+                    console.log("**************"+email)
+                        request.find ({"email":email})
+                        .then((requestDates)=>{
+                            console.log("**************"+requestDates)
+                            for(let i=0;i<requestDates.length;i++){
 
+                                if(requestDates[i].status == "request sent"){
+                                    requestDate.push(requestDates[i])
+                                }
+                                else{
+                                    console.log("nothing")
+                                }
+                            }
+                      
                     return resolve({
                         status: 201,
                         orgname: orgnames,
                         documentid: doctype,
-                        timestamp: timestamps
+                        timestamp: timestamps,
+                        requestDate:requestDate
 
 
                     })
-
+                })
                 })
             })
         })
